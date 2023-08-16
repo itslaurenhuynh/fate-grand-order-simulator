@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+<meta charset = "utf-8">
+	<title> F/GO Simulator </title>
+	<link rel="stylesheet" href="details.css">
+</head>
+<body>
+	<h1 class = "title"> Fate/ Grand Order Simulator </h1>
+	
+	<div class = "bg">
+		<div class = "input">
+			<form>
+			Saint Quartz <input type = "number" id = "sq" >
+			Tickets <input type = "number" id = "tickets" >
+			</form>
+		</div>
+		
+		<div class = "summontype">
+			<p> Welcome to the Fate/ Grand Order Simulator! You can choose from 3 options: 1x roll which costs 3 Saint Quartz, 10x roll which costs 30 Saint Quartz, and 1x which costs 1 ticket! </p>
+			<p> Note: Your currency will decreased as you roll! </p>
+			<form>
+			<input type = "button" onclick = "oneroll()" value = "1x - 3 SQ">
+			<input type = "button" onclick = "tenroll()" value = "10x - 30 SQ">
+			<input type = "button" onclick = "onetix()" value = "1x - 1 ticket">
+			</form>
+		</div>
+		
+		<div class = "display">
+			<table>
+				<a id = "imglist"></a>
+			</table>
+		</div>
+		
+		<div class = "list">
+			Summons: <a id = "sumamt"> 0 </a><p id = "list"></p>	
+		</div>
+		
+		<div class = "total">
+			<p>Saint Quartz Spent: <a id = "sqamt"> 0 </a></p>
+			<p>Tickets Spent: <a id = "tixamt"> 0 </a></p>	
+		</div>
+	</div>
+<script>
+	var servantSummons = [
+		 [ //Rarity 5 
+            {type: "Servant", name: "Okita Souji", class: "Saber", rarity: 5, img: 'images/icons/OkitaSoujiFinalIcon.png'},
+            {type: "Servant", name: "Ishtar", class: "Archer", rarity: 5, img: 'images/icons/IshtarFinalIcon.png'},
+            {type: "Servant", name: "Scáthach", class: "Lancer", rarity: 5, img: 'images/icons/ScathachFinalIcon.png'},
+            {type: "Servant", name: "Artoria Pendragon (Rider Alter)", class: "Rider", rarity: 5, img: 'images/icons/S179.png'},
+            {type: "Servant", name: "Merlin", class: "Caster", rarity: 5, img: 'images/icons/MerlinCostume1Icon.png'},
+            {type: "Servant", name: "Kama", class: "Assassin", rarity: 5, img: 'images/icons/KamaStage2Icon.png'},
+            {type: "Servant", name: "Arjuna (Alter)", class: "Berserker", rarity: 5, img: 'images/icons/S247Icon.png'},
+            {type: "Servant", name: "Artoria Pendragon (Ruler)", class: "Ruler", rarity: 5, img: 'images/icons/ArtoriaPendragonRulerStage3Icon.png'},
+            {type: "Servant", name: "Space Ishtar", class: "Avenger", rarity: 5, img: 'images/icons/SpaceIshtarFinalIcon.png'},
+            {type: "Servant", name: "BB (Summer)", class: "Moon Cancer", rarity: 5, img: 'images/icons/BBSummerFinalIcon.png'},
+            {type: "Servant", name: "Sessyoin Kiara", class: "Alter Ego", rarity: 5, img: 'images/icons/SessyouinKiaraFinalIcon.png'},
+            {type: "Servant", name: "Katsushika Hokusai", class: "Foreigner", rarity: 5, img: 'images/icons/KatsushikaHokusaiStage2Icon.png'}
+        ],
+        [ // Rarity 4
+            {type: "Servant", name: "Artoria Pendragon (Alter)", class: "Saber", rarity: 4, img: 'images/icons/ArtoriaAlterFinalIcon.png'},
+            {type: "Servant", name: "Chloe von Einzbern", class: "Archer", rarity: 4, img: 'images/icons/Kuroicon.png'},
+            {type: "Servant", name: "Valkyrie", class: "Lancer", rarity: 4, img: 'images/icons/ValkyrieFinalIcon.png'},
+            {type: "Servant", name: "Ishtar (Rider)", class: "Rider", rarity: 4, img: 'images/icons/IshtarRiderFinalIcon.png'},
+            {type: "Servant", name: "Irisviel (Dress of Heaven)", class: "Caster", rarity: 4, img: 'images/icons/Irisvielicon.png'},
+            {type: "Servant", name: "Okita J Soji", class: "Assassin", rarity: 4, img: 'images/icons/OkitaJsoujiFinalIcon.png'},
+            {type: "Servant", name: "Jeanne d'Arc (Berseker Alter)", class: "Berserker", rarity: 4, img: 'images/icons/JeanneAlterBerserkerFinalIcon.png'},
+            {type: "Servant", name: "Astraea", class: "Ruler", rarity: 4, img: 'images/icons/AstraeaFinalIcon.png'},
+            {type: "Servant", name: "Gorgon", class: "Avenger", rarity: 4, img: 'images/icons/GorgonFinalIcon.png'},
+            {type: "Servant", name: "BB", class: "Moon Cancer", rarity: 4, img: 'images/icons/BBFinalIcon.png'},
+            {type: "Servant", name: "Mecha Eli-Chan", class: "Alter Ego", rarity: 4, img: 'images/icons/MecaEriChanFinalIcon.png'},
+            {type: "Servant", name: "Mysterious Heroine XX", class: "Foreigner", rarity: 4, img: 'images/icons/MHXXFinalIcon.png'}
+        ],
+        ];
+		
+	var CE = [
+		[
+			{type: "CE", name: "Kaleidoscope", class: "CE", rarity: 5, img: 'images/icons/Kaleidoicon.png'},
+			{type: "CE", name: "Kiss Your Hand", class: "CE", rarity: 5, img: 'images/icons/KissHandIcon.png'},
+			{type: "CE", name: "Fondant au Chocolat", class: "CE", rarity: 5, img: 'images/icons/FondantauChocolaticon.png'},
+			{type: "CE", name: "Imaginary Around", class: "CE", rarity: 5, img: 'images/icons/Imaginaryicon.png'},
+			{type: "CE", name: "Participation of the King", class: "CE", rarity: 5, img: 'images/icons/Participation_of_the_King_icon.png'}
+		],
+		[
+			{type: "CE", name: "Kaleid Ruby", class: "CE", rarity: 4, img: 'images/icons/Rubyicon.png'},
+			{type: "CE", name: "Tsukimihara Student Council", class: "CE", rarity: 4, img: 'images/icons/TsukumiharaStudentCouncilCEIcon.png'},
+			{type: "CE", name: "Kaleid Sapphire", class: "CE", rarity: 4, img: 'images/icons/Sapphireicon.png'},
+			{type: "CE", name: "Outrage", class: "CE", rarity: 4, img: 'images/icons/OutrageIcon.png'},
+			{type: "CE", name: "Code Cast", class: "CE", rarity: 4, img: 'images/icons/Codeicon.png'}
+		],
+		[
+			{type: "CE", name: "Battle of Camlann", class: "CE", rarity: 3, img: 'images/icons/Battle_of_Camlann_icon.png'},
+			{type: "CE", name: "Dragon's Meridian", class: "CE", rarity: 3, img: 'images/icons/Leyicon.png'},
+			{type: "CE", name: "From Wonderland", class: "CE", rarity: 3, img: 'images/icons/Icon_CE_0682.png'},
+			{type: "CE", name: "Sakura's Custom-Made Bento", class: "CE", rarity: 3, img: 'images/icons/Icon_CE815.png'},
+			{type: "CE", name: "Welcome Diner", class: "CE", rarity: 3, img: 'images/icons/Icon_CE_0769.png'}
+		],
+		];
+		
+		var summonList = []; //img list
+		var saint = document.getElementById("sq").value;
+		var tix = document.getElementById("tickets").value;
+		var listSummon = ""; //summon list
+		var tickets = 0;
+		var sq = 0;
+		var summonAMT = 0;		
+	
+		function WeightedRandom(){
+			var num = Math.random() * 100;
+	
+			if(num < 5) 
+				return servantSummons[0][Math.floor(Math.random() * (servantSummons[0].length))];
+			if(num < 15)
+				return servantSummons[1][Math.floor(Math.random() * (servantSummons[1].length))];
+			if(num < 25)
+				return CE[0][Math.floor(Math.random() * (CE[0].length))];
+			if(num < 50)
+				return CE[1][Math.floor(Math.random() * (CE[1].length))];
+			else
+				return CE[2][Math.floor(Math.random() * (CE[2].length))];
+		}
+		
+		function rollTen(){		
+			var num = Math.random() * 100;
+	
+			if(num < 5) 
+				return servantSummons[0][Math.floor(Math.random() * (servantSummons[0].length))];
+			if(num < 15)
+				return servantSummons[1][Math.floor(Math.random() * (servantSummons[1].length))];
+			if(num < 25)
+				return CE[0][Math.floor(Math.random() * (CE[0].length))];
+			if(num < 50)
+				return CE[1][Math.floor(Math.random() * (CE[1].length))];
+			else
+				return CE[2][Math.floor(Math.random() * (CE[2].length))];	
+		}
+				
+		function oneroll(){
+			saint = document.getElementById("sq").value;
+			var node = document.createElement("LI");
+			const choice = WeightedRandom();
+			var summon = (Array.isArray(choice)) ? choice[Math.floor(Math.random() * choice.length)].name : choice.name;
+			var summonIcon = (Array.isArray(choice)) ? choice[Math.floor(Math.random() * choice.length)].name : '<img src = "'+choice.img+'">';
+			
+			var newSummon = document.createTextNode(summon);
+			if(saint >= 3){
+					document.getElementById("sq").value = saint - 3;
+					sq += 3;
+					summonAMT += 1;
+					summonList.push("<td>" + summonIcon + "</td>");
+					node.appendChild(newSummon);
+					document.getElementById("list").appendChild(node);
+			}
+			document.getElementById("imglist").innerHTML = summonList;	
+			document.getElementById("sqamt").innerHTML = sq;
+			document.getElementById("sumamt").innerHTML = summonAMT;
+		}
+		
+		function tenroll(){
+			saint = document.getElementById("sq").value;
+		if(saint < 30) return;
+		
+			document.getElementById("sq").value = saint - 30;
+			sq += 30;
+			summonAMT += 10;
+			
+			var node = document.createElement("LI");
+			var str = "";
+			var choice = [];
+			for(var i = 0; i < 10; i++){
+				choice.push(rollTen());
+			}
+			for(i = 0; i < 10; i++){
+				summonList.push("<td>" + '<img src = "'+choice[i].img+'">' + "</td>");
+				str += "<li>" + choice[i].name + "</li>";
+			}
+			document.getElementById("list").innerHTML += str;
+			document.getElementById("imglist").innerHTML = summonList;	
+			document.getElementById("sqamt").innerHTML = sq;
+			document.getElementById("sumamt").innerHTML = summonAMT;
+		}
+		
+		function onetix(){
+			tix = document.getElementById("tickets").value;
+			var node = document.createElement("LI");
+			const choice = WeightedRandom();
+			var summon = (Array.isArray(choice)) ? choice[Math.floor(Math.random() * choice.length)].name : choice.name;
+			var summonIcon = (Array.isArray(choice)) ? choice[Math.floor(Math.random() * choice.length)].name : '<img src = "'+choice.img+'">';
+			var newSummon = document.createTextNode(summon);
+			if(tix >= 1){
+					document.getElementById("tickets").value = tix - 1;
+					tickets += 1;
+					summonAMT += 1;
+					summonList.push("<td>" + summonIcon + "</td>");
+					node.appendChild(newSummon);
+					document.getElementById("list").appendChild(node);
+			}
+			document.getElementById("imglist").innerHTML = summonList;	
+			document.getElementById("tixamt").innerHTML = tickets;
+			document.getElementById("sumamt").innerHTML = summonAMT;
+	}
+</script>
+</body>
+</html>

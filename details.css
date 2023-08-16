@@ -1,0 +1,44 @@
+body{
+	background-image: url('images/background.jpg');
+	background-repeat: no-repeat;
+	height: 100%;
+	background-size: cover;
+	
+}
+
+.bg{
+
+	flex: 40%;
+	padding: 20px;
+	background-color: white;
+	margin-left: 450px;
+	margin-right: 450px;
+	text-align: center;
+	text-decoration: none;
+	
+}
+
+.title{
+
+	color: white;
+	text-align: center;
+}
+
+.input{
+	
+	text-align: center;	
+	margin-bottom: 5px;
+}
+
+img{
+	width: 75px;
+	height: 82px;
+}
+
+.list{
+	text-align: left;
+}
+
+.total{
+	text-align: right;
+}
